@@ -6,16 +6,9 @@
 set -e
 PLUGIN_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Guard against the Cowork `.mcp.json` env-block quirk: `${VAR}` can come
-# through as a literal six-character string rather than being expanded.
-# Treat a value starting with "${" the same as unset.
-case "${CLAUDE_PLUGIN_DATA:-}" in
-  '${'*) unset CLAUDE_PLUGIN_DATA ;;
-esac
-
 # Resolve where discovered skill files are written.
 # CLAUDE_PLUGIN_DATA is the managed lifecycle dir provided by the plugin host.
-if [ -n "${CLAUDE_PLUGIN_DATA:-}" ]; then
+if [ -n "${CLAUDE_PLUGIN_DATA}" ]; then
   export SKILLS_BASE_DIR="$CLAUDE_PLUGIN_DATA/glean-skills-cache"
 else
   export SKILLS_BASE_DIR="${HOME:-/tmp}/.claude/tmp/glean-skills-cache"
