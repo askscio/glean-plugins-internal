@@ -2,6 +2,8 @@
 name: glean_run
 description: Discover and run Glean skills for enterprise app tasks
 argument-hint: <task description>
+allowed-tools:
+  - Read(path="**/glean-skills-cache/**")
 ---
 
 # Glean Run
