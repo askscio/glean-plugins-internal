@@ -86,7 +86,7 @@ export async function createRemoteClient(
   }
 
   const client = new Client(
-    { name: "glean-run", version: "1.0.0" },
+    { name: "glean", version: "1.0.0" },
     { capabilities: {} },
   );
 

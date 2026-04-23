@@ -4,7 +4,6 @@
 // paths contain `@`, which appears in every scoped npm package's directory
 // name (`node_modules/@modelcontextprotocol/...`). Inlining every dep into
 // one `dist/index.js` means the shipped tree has no scoped-package paths.
-// See 0.5.1 notes in git log for the full story.
 //
 // Bundle shape:
 //   - platform=node, format=esm so Node can load it with `node dist/index.js`

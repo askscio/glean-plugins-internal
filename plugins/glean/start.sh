@@ -1,12 +1,10 @@
 #!/bin/bash
 # Invoked by the plugin host (Cowork or Claude Code) to launch the Glean MCP
-# server. As of 0.5.1 the .plugin bundle ships a single-file esbuild output at
-# dist/index.js with every non-builtin inlined — no node_modules next to it.
-# This script's job is env sanitation plus capturing LAUNCH_CWD so we can
-# anchor `git rev-parse --show-toplevel` to the host's spawn cwd rather than
-# whatever cwd Node happens to inherit. Previously a pure-Node replacement
-# (0.5.2) lost that anchor and the "fallback to LAUNCH_CWD when not in a
-# repo" branch — see git log for why we reverted.
+# server. The plugin ships a single-file esbuild output at dist/index.js with
+# every non-builtin inlined — no node_modules next to it. This script handles
+# env sanitation and captures LAUNCH_CWD so we can anchor
+# `git rev-parse --show-toplevel` to the host's spawn cwd rather than whatever
+# cwd Node happens to inherit.
 set -e
 LAUNCH_CWD="$PWD"
 PLUGIN_DIR="$(cd "$(dirname "$0")" && pwd)"

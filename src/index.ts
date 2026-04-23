@@ -75,7 +75,7 @@ const remoteClientOpts: RemoteClientOptions = GLEAN_API_TOKEN.length > 0
   : { authProvider: new GleanOAuthClientProvider() };
 
 const server = new Server(
-  { name: "glean-run", version: "1.0.0" },
+  { name: "glean", version: "1.0.0" },
   { capabilities: { tools: {} } },
 );
 
