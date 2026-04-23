@@ -67,6 +67,43 @@ expires.
 # button on the marketplace entry.
 ```
 
+## Testing a specific branch or PR
+
+You can point the marketplace at a specific git branch, tag, or commit:
+
+```bash
+# Install from a specific branch (e.g. a PR branch)
+/plugin marketplace add askscio/glean-plugins-internal@branch-name
+/plugin install glean@glean-plugins-internal
+
+# Or update an existing marketplace to a different branch
+/plugin marketplace remove glean-plugins-internal
+/plugin marketplace add askscio/glean-plugins-internal@branch-name
+```
+
+You can also pin to a branch in `settings.json`:
+
+```json
+{
+  "marketplaces": [
+    {
+      "name": "glean-plugins-internal",
+      "source": "https://github.com/askscio/glean-plugins-internal",
+      "sourceType": "git",
+      "branch": "mohit-baseline-marketplace-layout"
+    }
+  ]
+}
+```
+
+For local development, point the marketplace at your local checkout instead:
+
+```bash
+/plugin marketplace add /path/to/glean-plugins-internal
+```
+
+Then just `git checkout` whichever branch you want to test.
+
 ## Troubleshooting
 
 - **Sign-in loop** — the cached OAuth provider state may be stale. Delete
