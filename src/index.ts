@@ -5,7 +5,6 @@ import {
   CallToolRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import path from "node:path";
-import fs from "node:fs";
 import { AuthRequiredError, createRemoteClient, type RemoteClientOptions } from "./remote-client.js";
 import { GleanOAuthClientProvider } from "./auth-provider.js";
 import { handleDiscoverSkills } from "./tools/discover-skills.js";
@@ -19,55 +18,11 @@ if (!GLEAN_MCP_SERVER_URL) {
   process.exit(1);
 }
 
-const CACHE_DIR_NAME = "glean-skills-cache";
-
-/**
- * Resolves the directory where discovered skill files are written.
- *
- * Each skill directory is deleted-and-recreated on re-fetch to keep
- * content fresh without accumulating stale directories.
- *
- * Opt-in routing under the launch project is handled by start.sh
- * (gated on $USE_CLAUDE_PROJECT_DIR=1); when it applies, start.sh
- * exports $PROJECT_DIR (git repo root, or launch cwd if not in a
- * git repo) for us to root the cache under.
- *
- * Lookup order:
- *  1. $SKILLS_BASE_DIR                      — explicit override
- *  2. $PROJECT_DIR/.claude/tmp/<cache>      — opt-in path (set by start.sh when USE_CLAUDE_PROJECT_DIR=1);
- *                                             only used if $PROJECT_DIR/.claude already exists
- *  3. $PLUGIN_DATA_DIR/                     — CLAUDE_PLUGIN_DATA; managed lifecycle
- *  4. $HOME/tmp/                            — Cowork VMs mount a writable ~/tmp/
- *  5. /tmp/                                 — universal POSIX fallback
- */
 function resolveSkillsBaseDir(): string {
   if (process.env.SKILLS_BASE_DIR) {
     return process.env.SKILLS_BASE_DIR;
   }
-
-  const projectDir = process.env.PROJECT_DIR;
-  if (projectDir) {
-    if (fs.existsSync(path.join(projectDir, ".claude"))) {
-      return path.join(projectDir, ".claude", "tmp", CACHE_DIR_NAME);
-    }
-  }
-
-  // Fallback: plugin data dir with managed lifecycle.
-  const pluginDataDir = process.env.PLUGIN_DATA_DIR;
-  if (pluginDataDir) {
-    return path.join(pluginDataDir, CACHE_DIR_NAME);
-  }
-
-  // Cowork VMs mount a writable ~/tmp/ for scratch files.
-  const home = process.env.HOME;
-  if (home) {
-    const homeTmp = path.join(home, "tmp");
-    if (fs.existsSync(homeTmp)) {
-      return path.join(homeTmp, CACHE_DIR_NAME);
-    }
-  }
-
-  return path.join("/tmp", CACHE_DIR_NAME);
+  return path.join("/tmp", "glean-skills-cache");
 }
 
 const remoteClientOpts: RemoteClientOptions = GLEAN_API_TOKEN.length > 0
