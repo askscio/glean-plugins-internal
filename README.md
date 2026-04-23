@@ -87,7 +87,6 @@ npm install
 npm test            # vitest
 npm run typecheck   # tsc --noEmit
 npm run build       # esbuild → plugins/glean/dist/index.js
-npm run pack:plugin # produce glean-<version>.plugin sideload artifact
 ```
 
 Source is at the repo root (`src/`, `tests/`, `scripts/`). Packaged
@@ -99,15 +98,12 @@ runtime lives under `plugins/glean/`. See the Layout section below.
    `plugins/glean/.cursor-plugin/plugin.json` **and**
    `plugins/glean/package.json` (keep all three in sync).
 2. `npm test && npm run typecheck` — verify clean.
-3. `npm run pack:plugin` — produces `glean-<version>.plugin`. Optional;
-   marketplace-add users install straight from git and don't need the
-   archive.
-4. Commit, tag, and push:
+3. Commit, tag, and push:
    ```bash
    git tag v<version>
    git push && git push --tags
    ```
-5. Draft a release on GitHub if you want to attach the `.plugin` file.
+4. Draft a release on GitHub.
 
 ## Layout
 
@@ -137,10 +133,9 @@ plugins/glean/
                           host's spawn cwd, then execs node on the bundle
   package.json            Minimal "type": "module" manifest so Node
                           treats dist/index.js as ESM at runtime
-  LICENSES-THIRD-PARTY.txt Attribution for inlined dependencies
 src/                      TypeScript sources for the MCP server
 tests/                    Vitest suite
-scripts/                  build.mjs, pack-plugin.sh, build-licenses.mjs
+scripts/                  build.mjs
 package.json              Top-level dev config — deps, npm scripts
 tsconfig.json             TypeScript config for the dev tree
 ```
