@@ -18,7 +18,7 @@ PLUGIN_VERSION=$(node -p "require('./plugins/glean/.claude-plugin/plugin.json').
 BASE_VERSION=$(git show "$BASE_REF":plugins/glean/.claude-plugin/plugin.json | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin','utf-8')).version")
 
 # Validate both versions are valid semver triplets (x.y.z).
-SEMVER_RE='^[0-9]+\.[0-9]+\.[0-9]+$'
+SEMVER_RE='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$'
 if ! [[ "$PLUGIN_VERSION" =~ $SEMVER_RE ]]; then
   echo "ERROR: Current version '$PLUGIN_VERSION' is not a valid semver triplet (x.y.z)."
   exit 1
