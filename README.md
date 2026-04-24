@@ -112,8 +112,7 @@ runtime lives under `plugins/glean/`. See the Layout section below.
 
 ## Release process
 
-1. Bump `version` in `plugins/glean/.claude-plugin/plugin.json` **and**
-   `plugins/glean/package.json` (keep in sync).
+1. Bump `version` in `plugins/glean/.claude-plugin/plugin.json`.
 2. `npm test && npm run typecheck` — verify clean.
 3. Commit, tag, and push:
    ```bash
