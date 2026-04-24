@@ -135,7 +135,7 @@ plugins/glean/
   .mcp.json               MCP server invocation read by Claude Code /
                           Cowork. Source of truth.
   dist/index.js           Built server bundle (every dep inlined; produced
-                          by `npm run build`; gitignored)
+                          by `npm run build`; checked in)
   skills/glean_run/       Skill that tells the agent how to use the
                           tools. Uses the open SKILL.md standard.
   start.sh                Bash launcher that anchors PROJECT_DIR to the

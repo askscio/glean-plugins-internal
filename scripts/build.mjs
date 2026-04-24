@@ -13,11 +13,8 @@
 //   - external: the `node:*` builtins (explicit for clarity; esbuild on
 //     platform=node treats bare `node:*` as external by default but we pin
 //     it so this doesn't regress silently)
-//   - sourcemap=inline so production stack traces point back at real files;
-//     the source map lives inside dist/index.js and never becomes its own
-//     zip entry
-//   - minify=false so the zipped bundle is still grep-able for debugging
-//     (esbuild-bundled JS is already reasonably compact)
+//   - no sourcemap or minification — the bundle is checked into git and
+//     should stay readable for debugging
 
 import { build } from "esbuild";
 import { builtinModules } from "node:module";
@@ -47,8 +44,6 @@ await build({
   banner: {
     js: `import { createRequire as __glean_createRequire } from "node:module";\nconst require = __glean_createRequire(import.meta.url);`,
   },
-  sourcemap: "inline",
-  sourcesContent: true,
   minify: false,
   legalComments: "linked",
   logLevel: "info",

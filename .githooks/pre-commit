@@ -1,0 +1,6 @@
+#!/bin/bash
+# Rebuild dist/index.js and stage it on every commit.
+set -e
+
+npm run build --silent
+git add plugins/glean/dist/index.js
