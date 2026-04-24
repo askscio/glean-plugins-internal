@@ -1,0 +1,8 @@
+#!/bin/bash
+# Rebuild dist/index.js if any source files changed, and stage it.
+set -e
+
+if git diff --cached --name-only | grep -qE '^(src/|scripts/build\.mjs|package\.json|package-lock\.json)'; then
+  npm run build --silent
+  git add plugins/glean/dist/index.js
+fi
