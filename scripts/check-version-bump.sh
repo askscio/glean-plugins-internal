@@ -1,7 +1,7 @@
 #!/bin/bash
-# CI check: verify the patch version was incremented when plugin files change.
+# CI check: verify the version was incremented when plugin files change.
 # Compares the PR branch version against the base branch version.
-# Version source of truth: plugins/glean/.claude-plugin/plugin.json
+# Rejects downgrades. Version source of truth: plugins/glean/.claude-plugin/plugin.json
 set -euo pipefail
 
 BASE_REF="${1:-origin/master}"
@@ -23,7 +23,26 @@ if [ "$PLUGIN_VERSION" = "$BASE_VERSION" ]; then
   echo "  Base version:    $BASE_VERSION"
   echo "  Current version: $PLUGIN_VERSION"
   echo ""
-  echo "Bump the patch version in plugins/glean/.claude-plugin/plugin.json"
+  echo "Bump the version in plugins/glean/.claude-plugin/plugin.json"
+  exit 1
+fi
+
+# Reject downgrades: current version must be greater than base.
+HIGHER=$(node -p "
+  const a = '$BASE_VERSION'.split('.').map(Number);
+  const b = '$PLUGIN_VERSION'.split('.').map(Number);
+  for (let i = 0; i < 3; i++) {
+    if (b[i] > a[i]) { console.log = () => {}; process.exit(); }
+    if (b[i] < a[i]) { console.log = () => {}; process.exit(1); }
+  }
+" 2>&1 && echo "ok" || echo "downgrade")
+
+if [ "$HIGHER" = "downgrade" ]; then
+  echo "ERROR: Version was downgraded."
+  echo "  Base version:    $BASE_VERSION"
+  echo "  Current version: $PLUGIN_VERSION"
+  echo ""
+  echo "The version must be higher than the base branch."
   exit 1
 fi
 
