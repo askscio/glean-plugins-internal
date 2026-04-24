@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "glean": {
+      "command": "bash",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/start.sh"],
+      "env": {
+        "GLEAN_MCP_SERVER_URL": "https://scio-prod-be.glean.com/mcp/gateway/proxy"
+      }
+    }
+  }
+}
