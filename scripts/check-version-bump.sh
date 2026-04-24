@@ -6,7 +6,9 @@ set -euo pipefail
 
 BASE_REF="${1:-origin/master}"
 
-PLUGIN_PATHS="^(src/|plugins/glean/|scripts/build\.mjs)"
+# Only trigger on files that affect the plugin runtime — not CI, version
+# bumps, or tooling scripts.
+PLUGIN_PATHS="^(src/|plugins/glean/(dist/|skills/|start\.sh|\.mcp\.json|package\.json)|scripts/build\.mjs)"
 
 if ! git diff --name-only "$BASE_REF"...HEAD | grep -qE "$PLUGIN_PATHS"; then
   echo "No plugin files changed — skipping version check."
