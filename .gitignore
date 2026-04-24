@@ -1,4 +1,3 @@
 node_modules/
-plugins/*/dist/
-dist/
+/dist/
 .DS_Store
