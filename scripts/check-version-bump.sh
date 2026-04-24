@@ -38,7 +38,7 @@ if [ "$PLUGIN_VERSION" = "$BASE_VERSION" ]; then
 fi
 
 # Reject downgrades: current version must be strictly greater than base.
-IS_GREATER=$(node -e "
+if ! node -e "
   const a = '$BASE_VERSION'.split('.').map(Number);
   const b = '$PLUGIN_VERSION'.split('.').map(Number);
   for (let i = 0; i < 3; i++) {
@@ -46,9 +46,7 @@ IS_GREATER=$(node -e "
     if (b[i] < a[i]) process.exit(1);
   }
   process.exit(1);
-" 2>&1 && echo "yes" || echo "no")
-
-if [ "$IS_GREATER" = "no" ]; then
+"; then
   echo "ERROR: Version was downgraded."
   echo "  Base version:    $BASE_VERSION"
   echo "  Current version: $PLUGIN_VERSION"
