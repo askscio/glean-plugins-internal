@@ -38,9 +38,10 @@ opens automatically with a sign-in URL. The tool call returns
 3. Retry the original tool call — it will succeed once the browser callback
    completes.
 
-After sign-in, the OAuth credentials are cached to `~/.glean/` and reused
-across sessions — you won't be prompted again until the refresh token
-expires.
+After sign-in, the OAuth credentials are cached and reused across sessions
+— you won't be prompted again until the refresh token expires. Credentials
+are stored in `$PLUGIN_DATA_DIR/` when the host provides it, otherwise
+`~/.glean/`.
 
 ## Updates
 
@@ -92,7 +93,8 @@ Then just `git checkout` whichever branch you want to test.
 ## Troubleshooting
 
 - **Sign-in loop** — the cached OAuth provider state may be stale. Delete
-  `~/.glean/mcp-credentials.json` and retry.
+  `mcp-credentials.json` from the credentials directory
+  (`$PLUGIN_DATA_DIR/` or `~/.glean/`) and retry.
 - **`GLEAN_MCP_SERVER_URL is required`** — the plugin's `.mcp.json` wasn't
   picked up by the host. Reinstall; if that fails, open an issue.
 
@@ -105,6 +107,7 @@ npm install
 npm test            # vitest
 npm run typecheck   # tsc --noEmit
 npm run build       # esbuild → plugins/glean/dist/index.js
+npm run pack:plugin # produce glean-<version>.plugin sideload artifact
 ```
 
 Source is at the repo root (`src/`, `tests/`, `scripts/`). Packaged
@@ -138,8 +141,8 @@ plugins/glean/
                           by `npm run build`; gitignored)
   skills/glean_run/       Skill that tells the agent how to use the
                           tools. Uses the open SKILL.md standard.
-  start.sh                Bash launcher that anchors PROJECT_DIR to the
-                          host's spawn cwd, then execs node on the bundle
+  start.sh                Bash launcher that resolves SKILLS_BASE_DIR,
+                          then execs node on the bundle
   package.json            Minimal "type": "module" manifest so Node
                           treats dist/index.js as ESM at runtime
 src/                      TypeScript sources for the MCP server
