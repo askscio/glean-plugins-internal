@@ -5,7 +5,11 @@ import {
   CallToolRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import path from "node:path";
-import { AuthRequiredError, createRemoteClient, type RemoteClientOptions } from "./remote-client.js";
+import {
+  AuthRequiredError,
+  createRemoteClient,
+  type RemoteClientOptions,
+} from "./remote-client.js";
 import { GleanOAuthClientProvider } from "./auth-provider.js";
 import { handleDiscoverSkills } from "./tools/discover-skills.js";
 import { handleRunTool } from "./tools/run-tool.js";
@@ -25,9 +29,10 @@ function resolveSkillsBaseDir(): string {
   return path.join("/tmp", "glean-skills-cache");
 }
 
-const remoteClientOpts: RemoteClientOptions = GLEAN_API_TOKEN.length > 0
-  ? { apiToken: GLEAN_API_TOKEN }
-  : { authProvider: new GleanOAuthClientProvider() };
+const remoteClientOpts: RemoteClientOptions =
+  GLEAN_API_TOKEN.length > 0
+    ? { apiToken: GLEAN_API_TOKEN }
+    : { authProvider: new GleanOAuthClientProvider() };
 
 const server = new Server(
   { name: "glean", version: "1.0.0" },
@@ -115,8 +120,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             ],
           };
         }
-        const msg =
-          err instanceof Error ? err.message : String(err);
+        const msg = err instanceof Error ? err.message : String(err);
         console.error(`discover_skills: failed to connect to backend: ${msg}`);
         return {
           content: [
@@ -136,13 +140,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         );
         return { content: [{ type: "text", text }] };
       } catch (err) {
-        const msg =
-          err instanceof Error ? err.message : String(err);
+        const msg = err instanceof Error ? err.message : String(err);
         console.error(`discover_skills: execution failed: ${msg}`);
         return {
-          content: [
-            { type: "text", text: `discover_skills failed: ${msg}` },
-          ],
+          content: [{ type: "text", text: `discover_skills failed: ${msg}` }],
           isError: true,
         };
       } finally {
@@ -168,8 +169,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             ],
           };
         }
-        const msg =
-          err instanceof Error ? err.message : String(err);
+        const msg = err instanceof Error ? err.message : String(err);
         console.error(`run_tool: failed to connect to backend: ${msg}`);
         return {
           content: [
@@ -182,15 +182,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
       try {
-        return await handleRunTool(remoteClient, args);
+        const skillsBaseDir = resolveSkillsBaseDir();
+        return await handleRunTool(remoteClient, server, skillsBaseDir, args);
       } catch (err) {
-        const msg =
-          err instanceof Error ? err.message : String(err);
+        const msg = err instanceof Error ? err.message : String(err);
         console.error(`run_tool: execution failed: ${msg}`);
         return {
-          content: [
-            { type: "text", text: `run_tool failed: ${msg}` },
-          ],
+          content: [{ type: "text", text: `run_tool failed: ${msg}` }],
           isError: true,
         };
       } finally {
